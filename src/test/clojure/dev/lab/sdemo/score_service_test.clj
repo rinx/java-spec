@@ -1,61 +1,58 @@
 (ns dev.lab.sdemo.score-service-test
   (:use [clojure.test])
-  (:require [clojure.spec.alpha :as s]
-            [dev.lab.sdemo.util :as u]
+  (:require [clojure.spec.alpha :as spec]
+            [dev.lab.sdemo.util :as util]
             [clojure.spec.gen.alpha :as g]
             [clojure.spec.test.alpha :as t]
             [clojure.test.check.clojure-test :as ct]
             [clojure.test.check.properties :as prop]
             [clojure.test.check.generators :as gen])
-  (:import [dev.lab.sdemo Person ScoreService]))
+  (:import [dev.lab.sdemo Person ScoreService]
+           [java.text SimpleDateFormat]))
 
 
-(s/def :person/fname string?)
-(s/def :person/lname string?)
-(s/def :person/birthDate inst?)
+(spec/def :person/fname string?)
+(spec/def :person/lname string?)
+(spec/def :person/birthDate
+  (spec/with-gen
+    inst?
+    (fn [] (spec/gen (spec/inst-in #inst "1800-01-01" #inst "2100-01-01")))))
 
-(s/def :address/roadName string?)
-(s/def :address/houseNo string?)
-(s/def :address/postCode int?)
-(s/def :address/city string?)
-(s/def :address/country string?)
+(spec/def :addresspec/roadName string?)
+(spec/def :addresspec/houseNo string?)
+(spec/def :addresspec/postCode int?)
+(spec/def :addresspec/city string?)
+(spec/def :addresspec/country string?)
 
-(s/def ::address (s/keys :req-un [:address/roadName
-                                  :address/houseNo
-                                  :address/postCode
-                                  :address/city
-                                  :address/country]))
+(spec/def ::address (spec/keys :req-un [:addresspec/roadName
+                                  :addresspec/houseNo
+                                  :addresspec/postCode
+                                  :addresspec/city
+                                  :addresspec/country]))
 
-(s/def ::person (s/keys :req-un [:person/fname
+(spec/def ::person (spec/keys :req-un [:person/fname
                                  :person/lname
                                  :person/birthDate]
                         :opt-un [::address]))
 
-(s/def ::scoreType #{"HIGH" "LOW" "MEDIUM"})
-(s/def :score/value int?)
-(s/def ::score (s/keys :req-un [::scoreType]))
+(spec/def ::scoreType #{"HIGH" "LOW" "MEDIUM"})
+(spec/def :score/value int?)
+(spec/def ::score (spec/keys :req-un [::scoreType]))
 
-(s/fdef get-score
-        :args (s/cat :v ::person)
+(spec/fdef get-score
+        :args (spec/cat :v ::person)
         :ret ::score)
 
 
 (defn get-score [v]
-  (->> (u/to-jtype Person v)
+  (->> (util/to-jtype Person v)
        (.getScore (ScoreService.))
-       (u/from-jtype)))
+       (util/from-jtype)))
 
 
 (ct/defspec get-score-test
-            10
-            (prop/for-all [v (s/gen ::person)]
+            100
+            (prop/for-all [v (spec/gen ::person)]
+                          (println v)
                           (let [w (get-score v)]
                             (not= nil? w))))
-
-
-(deftest fail-test
-  (testing "Failing test "
-    (is (= 1 1))))
-
-
-
