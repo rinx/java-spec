@@ -5,8 +5,7 @@
 plugins {
     id 'java'
     id 'maven'
-    id "com.github.dkorotych.gradle-maven-exec" version "2.0"
-    id "gradle-clojure.clojure" version "0.4.0"
+    id "gradle-clojure.clojure" version "0.5.0-alpha.1"
 }
 
 repositories {
@@ -38,9 +37,4 @@ sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-}
-
-task clojureTest(type: MavenExec) {
-    goals 'compile'
-    goals 'clojure:test'
 }

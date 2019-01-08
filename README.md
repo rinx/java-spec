@@ -77,8 +77,8 @@ public class ScoreService {
                           (let [w (get-score v)]
 (not= nil? w))))
 ```
-## Generate Sample data
 
+## Generate Sample data
 ```clj
 (g/sample (s/gen ::person) 2)
 ;;Sample data
@@ -89,21 +89,8 @@ public class ScoreService {
 :address {:roadName "O", :houseNo "R", :postCode -1, :city "0", :country "4"}})
 ```
 
-## Run maven test 
-```clj
-mvn clojure:test
-
-[INFO] --- clojure-maven-plugin:1.8.1:test (default-cli) @ sdemo ---
-
-Testing dev.lab.sdemo.util
-
-Ran 0 tests containing 0 assertions.
-0 failures, 0 errors.
-
-Testing dev.lab.sdemo.score-service-test
-{:result true, :num-tests 10, :seed 1501674877185, :test-var "get-score-test"}
-
-Ran 1 tests containing 1 assertions.
-0 failures, 0 errors.
-Tests run: , Assertions: 1, Failures: 0, Errors: 0
+## Run gradle test
 ```
+./gradlew test --info
+```
+

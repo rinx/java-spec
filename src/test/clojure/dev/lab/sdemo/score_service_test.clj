@@ -56,3 +56,4 @@
                           (println v)
                           (let [w (get-score v)]
                             (not= nil? w))))
+
